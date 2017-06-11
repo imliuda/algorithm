@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #define max(a, b) ((a > b) ? (a) : (b))
@@ -27,7 +28,6 @@ int avl_tree_height(avl_tree **tree) {
 }
 
 static void right_rotate(avl_tree **tree) {
-    printf("right rotate\n");
     avl_tree *child = (*tree)->left;
     (*tree)->left = child->right;
     child->right = *tree;
@@ -41,7 +41,6 @@ static void right_rotate(avl_tree **tree) {
 }
 
 static void left_rotate(avl_tree **tree) {
-    printf("left rotate\n");
     avl_tree *child = (*tree)->right;
     (*tree)->right = child->left;
     child->left = *tree;
@@ -88,37 +87,32 @@ void avl_tree_insert(avl_tree **tree, int key, void *data) {
                           avl_tree_height(&(*tree)->right)) + 1;
 }
 
-#if 0
 /*
- * ┌ \u250c ┐ \u2510  ┴ \u2534  ─ \u2500
+ * below belongs to main function of this file
+ * there is no relation with avl tree
  */
-static void _avl_tree_print_symbol(int padding, int width) {
-    int i;
-    for (i = 0 ; i <= width / 2; i++) {
-        printf(" ");
-    }
-    printf("\u250c");
-    for (i = 0 ; i <= width / 2; i++) {
-        printf("\u2500");
-    }
-    printf("\u2534");
-    for (i = 0 ; i <= width / 2; i++) {
-        printf("\u2500");
-    }
-    printf("\u2510");
-    printf("\n");
+
+void key(avl_tree *tree, char *key) {
+    if (tree == NULL)
+        strcpy(key, "null");
+    else
+        snprintf(key, 32, "%d", tree->key);
 }
 
-static void _avl_tree_print_fill(avl_tree **tree, char *buf[]) {
-    
-}
-#endif
+void print_bintree(avl_tree *tree) {
+    char vkey[32], vleft[32], vright[32];
+    if (tree != NULL) {
+        key(tree, vkey);
+        key(tree->left, vleft);
+        key(tree->right, vright);
+        printf("current: %s, left: %s, right: %s\n", vkey, vleft, vright);
 
-void avl_tree_print(avl_tree **tree) {
-    if (*tree != NULL) {
-        printf("key: %d, height: %d, left: %d, right: %d\n", (*tree)->key, (*tree)->height, (*tree)->left ? (*tree)->left->key : 0, (*tree)->right ? (*tree)->right->key : 0);
-        avl_tree_print(&(*tree)->left);
-        avl_tree_print(&(*tree)->right);
+        if (tree->left) {
+            print_bintree(tree->left);
+        }
+        if (tree->right) {
+            print_bintree(tree->right);
+        }
     }
 }
 
@@ -140,6 +134,6 @@ int main() {
     //}
 
     printf("tree height: %d\n", avl_tree_height(&tree));
-    avl_tree_print(&tree);
+    print_bintree(tree);
     return 0;
 }
